@@ -4,6 +4,7 @@
 
 namespace husky_highlevel_controller {
 
+/* @brief: Constructor */
 HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nh)
     : nodeHandle(nh) {
     // get param from config file
