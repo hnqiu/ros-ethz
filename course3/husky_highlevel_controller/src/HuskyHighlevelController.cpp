@@ -6,7 +6,8 @@ namespace husky_highlevel_controller {
 
 /* @brief: Constructor */
 HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nh)
-    : nodeHandle(nh), subscriber(), publisher(), msg(), ctrl_p(.0) {
+    : nodeHandle(nh), subscriber(), vel_pub(), viz_pub(), marker()
+    , msg(), ctrl_p(.0) {
     // get param from config file
     nodeHandle.getParam("controller_gain", ctrl_p);
     std::string topic;
@@ -20,8 +21,11 @@ HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nh)
     // create subscriber
     subscriber = nodeHandle.subscribe(topic, queue_size, 
         &HuskyHighlevelController::LaserCallback, this);
-    // create publisher
-    publisher = nodeHandle.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+    // create publishers
+    vel_pub = nodeHandle.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+    viz_pub = nodeHandle.advertise<visualization_msgs::Marker>("visualization_marker", 0);
+    // pillar marker in RViz
+    initPillarMarker();
     ROS_INFO("Husk highlevel controller node launched!");
 }
 
@@ -43,7 +47,7 @@ void HuskyHighlevelController::setVel(const float &vel, const std::string &dof) 
  * publish a message to topic /cmd_vel to send a Twist to the robot
  */
 void HuskyHighlevelController::DriveHusky() {
-    publisher.publish(msg);
+    vel_pub.publish(msg);
 }
 
 
@@ -56,12 +60,20 @@ void HuskyHighlevelController::adjustHeading(const float &ang) {
 }
 
 
+/* @brief: visualize pillar with marker in RViz */
+void HuskyHighlevelController::vizPillar() {
+    marker.pose.position.x = pillar_pos[0];
+    marker.pose.position.y = pillar_pos[1];
+    marker.pose.position.z = -1.0;
+    viz_pub.publish(marker);
+}
+
+
 /*@brief: ROS topic callback function
  * print out the position of the pillar with respect to the robot
  * and adjust the robot heading towards the pillar
  */
 void HuskyHighlevelController::LaserCallback(const sensor_msgs::LaserScan &msg) {
-    float pillar_pos[2];
     // fist get the distance
     // typeof(msg.ranges) vector<float>(720)
     auto dist = std::min_element(msg.ranges.cbegin(), msg.ranges.cend());
@@ -78,8 +90,33 @@ void HuskyHighlevelController::LaserCallback(const sensor_msgs::LaserScan &msg) 
                     << ", " << pillar_pos[1] << "]");
 
     // set vel, adjust heading & drive Husky
-    setVel(1.0, "forward");
+    setVel(3.0, "forward");
     adjustHeading(ang);
     DriveHusky();
+
+    // viz pillar
+    vizPillar();
 }
+
+
+/* @brief: initialize pillar marker in RViz */
+void HuskyHighlevelController::initPillarMarker() {
+    marker.header.frame_id = "base_laser";
+    marker.header.stamp = ros::Time();
+    marker.ns = "pillar";
+    marker.id = 1;
+    marker.type = visualization_msgs::Marker::CYLINDER;
+    marker.action = visualization_msgs::Marker::ADD;
+    marker.pose.position.x = pillar_pos[0];
+    marker.pose.position.y = pillar_pos[1];
+    marker.pose.position.z = -1.0;
+    marker.scale.x = 0.5;
+    marker.scale.y = 0.5;
+    marker.scale.z = 2;
+    marker.color.a = 1.0; // Don't forget to set the alpha!
+    marker.color.r = 0.0;
+    marker.color.g = 1.0;
+    marker.color.b = 0.0;
+}
+
 } /* namespace */

@@ -3,6 +3,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Twist.h>
+#include <visualization_msgs/Marker.h>
 #include <vector>
 #include <string>
 #include <cmath>
@@ -40,19 +41,27 @@ public:
      */
     void adjustHeading(const float &ang);
 
+    /* @brief: visualize pillar with marker in RViz */
+    void vizPillar();
+
 private:
     /* data */
     ros::NodeHandle nodeHandle;
     ros::Subscriber subscriber;
-    ros::Publisher publisher;
+    ros::Publisher vel_pub, viz_pub;
     geometry_msgs::Twist msg;
+    visualization_msgs::Marker marker;
     float ctrl_p;
+    float pillar_pos[2];
 
     /* @brief: ROS topic callback function 
      * print out the position of the pillar with respect to the robot
      * and adjust the robot heading towards the pillar
      */
     void LaserCallback(const sensor_msgs::LaserScan &msg);
+
+    /* @brief: initialize pillar marker in RViz */
+    void initPillarMarker();
 };
 
 } /* namespace */
