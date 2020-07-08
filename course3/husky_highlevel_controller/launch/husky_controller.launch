@@ -1,4 +1,16 @@
 <?xml version="1.0"?>
+<!--
+  Copyright (C) 2019-2020 hnqiu. All rights reserved.
+  Licensed under the BSD-3-Clause license. See LICENSE for details.
+-->
+
+<!--
+  @brief: husky_controller.launch
+  launch file to launch the Husky robot in a single pillar world
+  robot runs towards the pillar
+  visualize robot & pillar in RViz
+-->
+
 <launch>
   <arg name="world_name" default="$(find husky_highlevel_controller)/worlds/singlePillar.world"/>
   <arg name="laser_enabled" default="true"/>

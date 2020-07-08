@@ -1,3 +1,7 @@
+/* Copyright (C) 2019-2020 hnqiu. All Rights Reserved.
+ * Licensed under the BSD-3-Clause license. See LICENSE for details.
+ */
+
 
 #include "husky_highlevel_controller/HuskyHighlevelController.hpp"
 

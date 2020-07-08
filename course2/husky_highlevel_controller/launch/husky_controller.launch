@@ -1,4 +1,16 @@
 <?xml version="1.0"?>
+<!--
+  Copyright (C) 2019-2020 hnqiu. All rights reserved.
+  Licensed under the BSD-3-Clause license. See LICENSE for details.
+-->
+
+<!--
+  @brief: husky_controller.launch
+  launch file to launch the Husky robot in a robocup world
+  print out distance between robot and the closest object
+  & visualize laser scan in RViz
+-->
+
 <launch>
   <arg name="world_name" default="worlds/robocup14_spl_field.world"/>
   <arg name="laser_enabled" default="true"/>
