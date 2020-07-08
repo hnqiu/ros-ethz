@@ -1,0 +1,3 @@
+subscriber_topic: /scan
+queue_size: 10
+controller_gain: 1
