@@ -30,11 +30,15 @@ public:
      */
     void setVel(const float &vel, const std::string &dof);
 
-
     /* @brief: ROS topic publish function 
      * publish a message to topic /cmd_vel to send a Twist to the robot
      */
     void DriveHusky();
+
+    /* @brief: adjust robot heading
+     * adjust heading using P control
+     */
+    void adjustHeading(const float &ang);
 
 private:
     /* data */
@@ -46,6 +50,7 @@ private:
 
     /* @brief: ROS topic callback function 
      * print out the position of the pillar with respect to the robot
+     * and adjust the robot heading towards the pillar
      */
     void LaserCallback(const sensor_msgs::LaserScan &msg);
 };

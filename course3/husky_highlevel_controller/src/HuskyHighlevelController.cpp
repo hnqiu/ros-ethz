@@ -8,6 +8,7 @@ namespace husky_highlevel_controller {
 HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nh)
     : nodeHandle(nh), subscriber(), publisher(), msg(), ctrl_p(.0) {
     // get param from config file
+    nodeHandle.getParam("controller_gain", ctrl_p);
     std::string topic;
     int queue_size;
     if ( !nodeHandle.getParam("subscriber_topic", topic) 
@@ -46,8 +47,18 @@ void HuskyHighlevelController::DriveHusky() {
 }
 
 
+/* @brief: adjust robot heading
+ * adjust heading using P control
+ */
+void HuskyHighlevelController::adjustHeading(const float &ang) {
+    float diff = -ang;
+    setVel(ctrl_p * diff, "ang");
+}
+
+
 /*@brief: ROS topic callback function
  * print out the position of the pillar with respect to the robot
+ * and adjust the robot heading towards the pillar
  */
 void HuskyHighlevelController::LaserCallback(const sensor_msgs::LaserScan &msg) {
     float pillar_pos[2];
@@ -65,5 +76,10 @@ void HuskyHighlevelController::LaserCallback(const sensor_msgs::LaserScan &msg) 
     pillar_pos[1] = *dist * std::sin(ang);
     ROS_INFO_STREAM("Pillar's coordinate to Husky is [" << pillar_pos[0]
                     << ", " << pillar_pos[1] << "]");
+
+    // set vel, adjust heading & drive Husky
+    setVel(1.0, "forward");
+    adjustHeading(ang);
+    DriveHusky();
 }
 } /* namespace */
