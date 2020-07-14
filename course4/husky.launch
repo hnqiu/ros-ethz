@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+  Copyright (C) 2019-2020 hnqiu. All rights reserved.
+  Licensed under the BSD-3-Clause license. See LICENSE for details.
+-->
+
+<!--
+  @brief: husky.launch
+  launch the Husky robot in a robocup world
+-->
+
+<launch>
+  <arg name="world_name" default="worlds/robocup14_spl_field.world"/>
+  <arg name="laser_enabled" default="true"/>
+  <arg name="kinect_enabled" default="false"/>
+
+  <include file="$(find husky_gazebo)/launch/husky_empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="laser_enabled" value="$(arg laser_enabled)"/>
+    <arg name="kinect_enabled" value="$(arg kinect_enabled)"/>
+  </include>
+
+  <node name="teleop_key" pkg="teleop_twist_keyboard" 
+    type="teleop_twist_keyboard.py" />
+
+</launch>
