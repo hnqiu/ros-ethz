@@ -1,6 +1,6 @@
 # Exercise Section 5
 
-- Implement a service to start/stop the robot
+- Implement [a service](husky_highlevel_controller/src/HuskyHighlevelController.cpp#L114) to start/stop the robot
 - Call service
   ```sh
   roslaunch husky_highlevel_controller husky_controller.launch
