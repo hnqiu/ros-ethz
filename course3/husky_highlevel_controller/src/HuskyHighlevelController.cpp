@@ -31,6 +31,9 @@ HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nh)
     // pillar marker in RViz
     initPillarMarker();
     ROS_INFO("Husk highlevel controller node launched!");
+
+    // init linear speed
+    setVel(3.0, "forward");
 }
 
 
@@ -93,8 +96,7 @@ void HuskyHighlevelController::LaserCallback(const sensor_msgs::LaserScan &msg) 
     ROS_INFO_STREAM("Pillar's coordinate to Husky is [" << pillar_pos[0]
                     << ", " << pillar_pos[1] << "]");
 
-    // set vel, adjust heading & drive Husky
-    setVel(3.0, "forward");
+    // adjust heading & drive Husky
     adjustHeading(ang);
     DriveHusky();
 
