@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+  Copyright (C) 2019-2020 hnqiu. All rights reserved.
+  Licensed under the BSD-3-Clause license. See LICENSE for details.
+-->
+
+<!--
+  @brief: husky_controller.launch
+  launch file to launch the Husky robot in a single pillar world
+  robot runs towards the pillar
+  visualize robot & pillar in RViz
+  can stop robot by calling service
+-->
+
+<launch>
+  <arg name="world_name" default="$(find husky_highlevel_controller)/worlds/singlePillar.world"/>
+  <arg name="laser_enabled" default="true"/>
+  <arg name="kinect_enabled" default="false"/>
+
+  <include file="$(find husky_gazebo)/launch/husky_empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="laser_enabled" value="$(arg laser_enabled)"/>
+    <arg name="kinect_enabled" value="$(arg kinect_enabled)"/>
+  </include>
+
+  <node name="husky_hl_ctrl" pkg="husky_highlevel_controller"
+    type="husky_highlevel_controller" output="screen" >
+    <rosparam  command="load"
+      file="$(find husky_highlevel_controller)/config/default.yaml" />
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" output="screen" />
+
+</launch>
