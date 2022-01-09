@@ -41,6 +41,11 @@ public:
      */
     void DriveHusky();
 
+    /* @brief: adjust robot forward speed
+     * adjust speed using saturated P control
+     */
+    void adjustSpeed(const float &dist);
+
     /* @brief: adjust robot heading
      * adjust heading using P control
      */
@@ -56,7 +61,7 @@ private:
     ros::Publisher vel_pub, viz_pub;
     geometry_msgs::Twist msg;
     visualization_msgs::Marker marker;
-    float ctrl_p;
+    float p_ang, p_vel;
     float pillar_pos[2];
 
     /* @brief: ROS topic callback function 

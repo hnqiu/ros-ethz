@@ -11,9 +11,9 @@ namespace husky_highlevel_controller {
 /* @brief: Constructor */
 HuskyHighlevelController::HuskyHighlevelController(ros::NodeHandle& nh)
     : nodeHandle(nh), subscriber(), vel_pub(), viz_pub(), marker()
-    , msg(), ctrl_p(.0) {
+    , msg(), p_ang(1.0), p_vel(.0) {
     // get param from config file
-    nodeHandle.getParam("controller_gain", ctrl_p);
+    nodeHandle.getParam("controller_gain", p_vel);
     std::string topic;
     int queue_size;
     if ( !nodeHandle.getParam("subscriber_topic", topic) 
@@ -58,12 +58,29 @@ void HuskyHighlevelController::DriveHusky() {
 }
 
 
+/* @brief: adjust robot forward speed
+ * adjust speed using saturated P control
+ */
+void HuskyHighlevelController::adjustSpeed(const float &dist) {
+    float vel = p_vel * (dist - 0.16); // stop at 0.16m away
+    if (vel > 5.0) {
+        vel = 5.0;
+    }
+    else if (vel < .0) {
+        vel = .0;
+        setVel(.0, "ang"); // do not turn either
+    }
+
+    setVel(vel, "forward");
+}
+
+
 /* @brief: adjust robot heading
  * adjust heading using P control
  */
 void HuskyHighlevelController::adjustHeading(const float &ang) {
     float diff = -ang;
-    setVel(ctrl_p * diff, "ang");
+    setVel(p_ang * diff, "ang");
 }
 
 
@@ -98,6 +115,7 @@ void HuskyHighlevelController::LaserCallback(const sensor_msgs::LaserScan &msg) 
 
     // adjust heading & drive Husky
     adjustHeading(ang);
+    adjustSpeed(*dist);
     DriveHusky();
 
     // viz pillar
