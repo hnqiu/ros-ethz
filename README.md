@@ -9,6 +9,8 @@ Solutions to the exercises of [ETHZ ROS course 2019](https://rsl.ethz.ch/educati
 
 The main purpose of these exercises is to create a ROS program that drives a Husky robot towards a pillar in gazebo, whose motions can be visualized in RViz and plotted in `rqt_multiplot`.
 
+https://user-images.githubusercontent.com/28779070/148672353-14701d96-f755-49a8-8942-4ef003b48173.mp4
+
 
 ## Contents
 
